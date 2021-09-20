@@ -947,7 +947,7 @@ void redex_frontend(ConfigFiles& conf, /* input */
   {
     Timer t("Deobfuscating dex elements");
     for (auto& store : stores) {
-      apply_deobfuscated_names(store.get_dexen(), conf.get_proguard_map());
+      apply_deobfuscated_names(store.get_dexen(), conf.get_proguard_map(), conf.deobfuscate_positions());
     }
   }
   DexStoreClassesIterator it(stores);

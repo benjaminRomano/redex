@@ -157,7 +157,7 @@ struct ProguardMap {
  * passes.
  */
 void apply_deobfuscated_names(const std::vector<DexClasses>&,
-                              const ProguardMap&);
+                              const ProguardMap&, bool);
 
 // Exposed for testing purposes.
 namespace pg_impl {

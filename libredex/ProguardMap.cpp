@@ -133,9 +133,8 @@ bool field_full_format(const char*& p, std::string& s) {
   if (!literal(p, ":")) {
     return false;
   }
-  if (!id(p, type, [](uint32_t s) {
-        return s == ' ' || s == '\n' || s == '\0';
-      })) {
+  if (!id(p, type,
+          [](uint32_t s) { return s == ' ' || s == '\n' || s == '\0'; })) {
     return false;
   }
 
@@ -170,9 +169,8 @@ bool method_full_format(const char*& p, std::string& s) {
     }
   }
 
-  if (!id(p, rtype, [](uint32_t s) {
-        return s == ' ' || s == '\n' || s == '\0';
-      })) {
+  if (!id(p, rtype,
+          [](uint32_t s) { return s == ' ' || s == '\n' || s == '\0'; })) {
     return false;
   }
 
@@ -586,7 +584,8 @@ std::string lines_key(const std::string& method_name) {
 } // namespace pg_impl
 
 void apply_deobfuscated_names(const std::vector<DexClasses>& dexen,
-                              const ProguardMap& pm) {
+                              const ProguardMap& pm,
+                              bool deobfuscate_positions) {
   std::function<void(DexClass*)> worker_empty_pg_map = [&](DexClass* cls) {
     cls->set_deobfuscated_name(show(cls));
     for (const auto& m : cls->get_dmethods()) {
@@ -611,13 +610,17 @@ void apply_deobfuscated_names(const std::vector<DexClasses>& dexen,
       TRACE(PGR, 4, "deob dmeth %s %s", SHOW(m),
             pm.deobfuscate_method(show(m)).c_str());
       m->set_deobfuscated_name(pm.deobfuscate_method(show(m)));
-      pg_impl::apply_deobfuscated_positions(m, pm);
+      if (deobfuscate_positions) {
+        pg_impl::apply_deobfuscated_positions(m, pm);
+      }
     }
     for (const auto& m : cls->get_vmethods()) {
       TRACE(PM, 4, "deob vmeth %s %s", SHOW(m),
             pm.deobfuscate_method(show(m)).c_str());
       m->set_deobfuscated_name(pm.deobfuscate_method(show(m)));
-      pg_impl::apply_deobfuscated_positions(m, pm);
+      if (deobfuscate_positions) {
+        pg_impl::apply_deobfuscated_positions(m, pm);
+      }
     }
     for (const auto& f : cls->get_ifields()) {
       TRACE(PM, 4, "deob ifield %s %s", SHOW(f),

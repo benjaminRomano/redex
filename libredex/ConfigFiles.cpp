@@ -36,6 +36,8 @@ ConfigFiles::ConfigFiles(const Json::Value& config, const std::string& outdir)
         config.get("default_coldstart_classes", "").asString();
   }
 
+  m_deobfuscate_positions = config.get("deobfuscate_positions", true).asBool();
+
   load_method_sorting_allowlisted_substrings();
   uint32_t instruction_size_bitwidth_limit =
       config.get("instruction_size_bitwidth_limit", 0).asUInt();

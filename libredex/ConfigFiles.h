@@ -90,6 +90,7 @@ struct ConfigFiles {
 
   void process_unresolved_method_profile_lines();
 
+  const bool deobfuscate_positions() { return m_deobfuscate_positions; }
   const std::unordered_set<DexType*>& get_no_optimizations_annos();
   const std::unordered_set<DexMethodRef*>& get_pure_methods();
   const std::unordered_set<DexString*>& get_finalish_field_names();
@@ -164,6 +165,15 @@ struct ConfigFiles {
 
   bool m_load_class_lists_attempted{false};
   std::unique_ptr<ProguardMap> m_proguard_map;
+
+  // When DEX files are read, line numbers are deobfuscated.
+  // R8 performs line number optimizations remapping line numbers
+  // to start from 1. Drastically reducing debugInfo size.
+  //
+  // When Redex generates debug info item entries, it uses the incorrect
+  // deobfuscated line number. Leading to incorrect debug info and worse size.
+  bool m_deobfuscate_positions;
+
   std::string m_coldstart_class_filename;
   std::vector<std::string> m_coldstart_classes;
   std::unordered_map<std::string, std::vector<std::string>> m_class_lists;
